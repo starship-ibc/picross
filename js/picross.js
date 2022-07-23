@@ -9,8 +9,8 @@ $(function() {
 
 		defaults: function() {
 			return {
-				dimensionWidth: 10,		// default dimension width
-				dimensionHeight: 10,	// default dimension height
+				dimensionWidth: 40,		// default dimension width
+				dimensionHeight: 30,	// default dimension height
 				state: [],
 				hintsX: [],
 				hintsY: [],
@@ -18,8 +18,6 @@ $(function() {
 				total: 100,
 				complete: false,
 				perfect: false,
-				seed: 0,
-				darkMode: false,
 				easyMode: true	// show crossouts
 			};
 		},
@@ -41,8 +39,6 @@ $(function() {
 				localStorage['picross2.total'] = JSON.stringify(this.get('total'));
 				localStorage['picross2.complete'] = JSON.stringify(this.get('complete'));
 				localStorage['picross2.perfect'] = JSON.stringify(this.get('perfect'));
-				localStorage['picross2.seed'] = JSON.stringify(this.get('seed'));
-				localStorage['picross2.darkMode'] = JSON.stringify(this.get('darkMode'));
 				localStorage['picross2.easyMode'] = JSON.stringify(this.get('easyMode'));
 			}
 		},
@@ -63,8 +59,6 @@ $(function() {
 			var total = JSON.parse(localStorage['picross2.total']);
 			var complete = JSON.parse(localStorage['picross2.complete']);
 			var perfect = JSON.parse(localStorage['picross2.perfect']);
-			var seed = JSON.parse(localStorage['picross2.seed']);
-			var darkMode = JSON.parse(localStorage['picross2.darkMode']);
 			var easyMode = JSON.parse(localStorage['picross2.easyMode']);
 
 			this.set({
@@ -77,37 +71,23 @@ $(function() {
 				total: total,
 				complete: complete,
 				perfect: perfect,
-				seed: seed,
-				darkMode: darkMode,
 				easyMode: easyMode
 			});
 		},
 
-		reset: function(customSeed) {
-
-			var seed = customSeed;
-			if(seed === undefined) {
-				seed = '' + new Date().getTime();
-			}
-			Math.seedrandom(seed);
-
-			var solution = [];
-			var state = [];
+		reset: function() {
 			var total = 0;
+			var hintsX = [[3], [2, 2], [14, 14], [14, 14], [14, 14], [16, 16], [9, 1, 1, 1, 9], [3, 5, 2, 1, 2, 5, 2], [2, 12, 3, 11, 1], [2, 13, 5, 10, 1], [2, 4, 7, 3, 1], [2, 6, 13, 6, 1], [2, 4, 2, 11, 7, 1], [2, 2, 2, 9, 2, 1, 1], [2, 2, 2, 7, 2, 1, 1], [2, 9, 7, 9, 1], [2, 2, 2, 1, 9, 1, 1, 1, 2, 1], [9, 1, 3, 3, 1, 3, 6], [10, 1, 2, 1, 2, 1, 10], [3, 10, 1, 3, 1, 10, 2], [2, 8, 5, 8, 1], [2, 2, 3, 11, 3, 2, 1], [3, 3, 2, 3, 5, 3, 2, 3, 2], [7, 4, 5, 4, 6], [5, 2, 2, 3, 2, 2, 4], [2, 1, 2], [3, 3], [2, 2], [2, 2], [5]]
+			var hintsY = [[17], [19], [3, 3, 3], [2, 1, 3, 2], [2, 1, 3, 2], [8, 3, 3], [22], [21], [11, 1, 4], [8, 2, 1, 3], [4, 2, 1, 1, 3], [4, 2, 2, 1, 4], [4, 2, 2, 1, 6], [4, 2, 3, 2, 2], [4, 2, 1, 6, 2], [4, 2, 2, 6], [4, 2, 3, 4, 2, 4], [6, 9, 1, 3], [4, 9, 4, 2], [3, 9, 6, 1], [1, 11, 8, 1], [3, 9, 6, 1], [4, 9, 4, 2], [6, 9, 1, 3], [4, 2, 3, 4, 2, 4], [4, 2, 2, 6], [4, 2, 1, 6, 2], [4, 2, 3, 2, 2], [4, 2, 2, 1, 6], [4, 2, 2, 1, 4], [4, 2, 2, 1, 5], [8, 2, 6], [11, 1, 4], [11, 1, 5], [22], [5, 3, 3], [2, 3, 2], [2, 3, 2], [3, 3, 3], [18]]
 
-			for(var i = 0; i < this.get('dimensionHeight'); i++) {
-				solution[i] = [];
+			var state = []
+			for (var i = 0; i < hintsX.length; i++) {
 				state[i] = [];
-				for(var j = 0; j < this.get('dimensionWidth'); j++) {
-					var random = Math.ceil(Math.random() * 2);
-					solution[i][j] = random;
-					total += (random - 1);
+				for (var j = 0; j < hintsY.length; j++) {
 					state[i][j] = 0;
 				}
 			}
-
-			var hintsX = this.getHintsX(solution);
-			var hintsY = this.getHintsY(solution);
+			
 
 			this.set({
 				state: state,
@@ -117,7 +97,6 @@ $(function() {
 				total: total,
 				complete: false,
 				perfect: false,
-				seed: seed
 			}, {silent: true});
 			this.trigger('change');
 		},
@@ -289,7 +268,6 @@ $(function() {
 				return {
 					"click #new": "newGame",
 					"click #solve": "solve",
-					"change #dark": "changeDarkMode",
 					"change #easy": "changeEasyMode",
 					"mousedown": "clickStart",
 					"mouseover td.cell": "mouseOver",
@@ -299,23 +277,18 @@ $(function() {
 					"touchmove td.cell": "touchMove",
 					"touchend td.cell": "touchEnd",
 					"submit #customForm": "newCustom",
-					"click #seed": function(e) { e.currentTarget.select(); },
-					"click #customSeed": function(e) { e.currentTarget.select(); },
 					"contextmenu": function(e) { e.preventDefault(); }
 				}
 			} else {
 				return {
 					"click #new": "newGame",
 					"click #solve": "solve",
-					"change #dark": "changeDarkMode",
 					"change #easy": "changeEasyMode",
 					"mousedown": "clickStart",
 					"mouseover td.cell": "mouseOver",
 					"mouseout td.cell": "mouseOut",
 					"mouseup": "clickEnd",
 					"submit #customForm": "newCustom",
-					"click #seed": function(e) { e.currentTarget.select(); },
-					"click #customSeed": function(e) { e.currentTarget.select(); },
 					"contextmenu": function(e) { e.preventDefault(); }
 				}
 			}
@@ -330,23 +303,11 @@ $(function() {
 		initialize: function() {
 			this.model.resume();
 			$('#dimensions').val(this.model.get('dimensionWidth') + 'x' + this.model.get('dimensionHeight'));
-			if(this.model.get('darkMode')) {
-				$('#dark').attr('checked', 'checked');
-			} else {
-				$('#dark').removeAttr('checked');
-			}
 			if(this.model.get('easyMode')) {
 				$('#easy').attr('checked', 'checked');
 			} else {
 				$('#easy').removeAttr('checked');
 			}
-			this.render();
-			this.showSeed();
-		},
-
-		changeDarkMode: function(e) {
-			var darkMode = $('#dark').attr('checked') !== undefined;
-			this.model.set({darkMode: darkMode});
 			this.render();
 		},
 
@@ -369,32 +330,17 @@ $(function() {
 			$('#solve').prop('disabled', false);
 			$('#puzzle').removeClass('complete');
 			$('#puzzle').removeClass('perfect');
-			$('#progress').removeClass('done');
-			this.changeDimensions();
 			this.model.reset(customSeed);
 			this.render();
-			this.showSeed();
 		},
 
 		newGame: function(e) {
-			$('#customSeed').val('');
 			this._newGame();
 		},
 
 		newCustom: function(e) {
 			e.preventDefault();
-
-			var customSeed = $.trim($('#customSeed').val());
-			if(customSeed.length) {
-				this._newGame(customSeed);
-			} else {
-				this._newGame();
-			}
-		},
-
-		showSeed: function() {
-			var seed = this.model.get('seed');
-			$('#seed').val(seed);
+			this._newGame();
 		},
 
 		clickStart: function(e) {
@@ -624,20 +570,11 @@ $(function() {
 		},
 
 		render: function() {
-			var progress = this.model.get('guessed') / this.model.get('total') * 100;
-			$('#progress').text(progress.toFixed(1) + '%');
-
-			if(this.model.get('darkMode')) {
-				$('body').addClass('dark');
-			} else {
-				$('body').removeClass('dark');
-			}
 
 			if(this.model.get('complete')) {
 				$('#solve').prop('disabled', true);
 				$('#puzzle').addClass('complete');
 				if(this.model.get('perfect')) {
-					$('#progress').addClass('done');
 					$('#puzzle').addClass('perfect');
 				}
 			}
@@ -701,7 +638,7 @@ $(function() {
 
 			$('#puzzle').html(html);
 
-			var side = (600 - (state[0].length * 5)) / state[0].length;
+			var side = (1000 - (state[0].length * 5)) / state[0].length;
 			$('#puzzle td.cell').css({
 				width: side,
 				height: side,

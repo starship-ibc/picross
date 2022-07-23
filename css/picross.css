@@ -3,7 +3,9 @@ html {
 }
 
 body {
-	background-color: #fafafa;
+	background-color: #05033C;
+	/* background-image: url("../images/SpunkCity_BGresize_1.jpeg"); */
+	/* background-size: contain; */
 	font-family: Helvetica, Arial, Sans-serif;
 	font-size: 13px;
 	height: 100%;
@@ -15,10 +17,15 @@ body {
 	user-select: none;
 }
 
-body.dark {
-	background-color: #222;
-	color: #ddd;
+.title {
+	color: white;
 }
+
+.title img {
+	padding-top: 1em;
+	width: 100%;
+}
+
 
 table, tr, td {
 	box-sizing: border-box;
@@ -31,16 +38,13 @@ a {
 	color: #333;
 }
 
-body.dark a {
-	color: #fff;
-}
 
 a:hover {
 	text-decoration: underline;
 }
 
 .container {
-	width: 800px;
+	width: 1200px;
 	overflow: hidden;
 	margin: 0 auto;
 	padding-top: 50px;
@@ -65,6 +69,12 @@ h1 {
 	text-align: center;
 }
 
+#puzzle {
+	float: right;
+	width: 1000px;
+}
+
+
 .controls {
 	float: left;
 	height: 680px;
@@ -82,22 +92,13 @@ h1 {
 	text-align: center;
 }
 
-body.dark .control-group {
-	background-color: #333;
-	border-bottom: 2px solid #000;
-	box-shadow: none;
-	color: #999;
-}
+
 
 .control-group h3 {
 	color: #000;
 	font-size: 15px;
 	font-weight: bold;
 	margin-bottom: 10px;
-}
-
-body.dark .control-group h3 {
-	color: #ddd;
 }
 
 .control-group .control-section {
@@ -127,10 +128,6 @@ body.dark .control-group h3 {
 .custom h5 {
 	color: #666;
 	font-size: 11px;
-}
-
-body.dark .custom h5 {
-	color: #999;
 }
 
 .custom input[type=text] {
@@ -166,17 +163,9 @@ body.dark .custom h5 {
 	color: #080;
 }
 
-#puzzle {
-	float: right;
-	width: 600px;
-}
 
 #puzzle td {
 	background-color: #fafafa;
-}
-
-body.dark #puzzle td.key {
-	background-color: #222;
 }
 
 #puzzle td:nth-child(5n + 1) {
@@ -203,10 +192,6 @@ body.dark #puzzle td.key {
 #puzzle td.key em {
 	color: #ccc;
 	text-decoration: line-through;
-}
-
-body.dark #puzzle td.key em {
-	color: #666;
 }
 
 #puzzle td.key.left em, #puzzle td.key.left strong {
