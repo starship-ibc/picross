@@ -35,9 +35,8 @@ table, tr, td {
 
 a {
 	text-decoration: none;
-	color: #333;
+	color: rgb(127, 127, 127);
 }
-
 
 a:hover {
 	text-decoration: underline;
@@ -54,7 +53,6 @@ a:hover {
 	clear: both;
 	width: 800px;
 	margin: 0 auto;
-	border-top: 1px dashed #ccc;
 	padding: 15px 0 20px;
 	text-align: center;
 	color: #999;
@@ -71,14 +69,14 @@ h1 {
 
 #puzzle {
 	float: right;
-	width: 1000px;
+	width: 900px;
 }
 
 
 .controls {
 	float: left;
 	height: 680px;
-	width: 150px;
+	width: 200px;
 }
 
 .control-group {
@@ -120,7 +118,6 @@ h1 {
 }
 
 .custom {
-	border-top: 1px dashed #ccc;
 	margin-top: 15px;
 	padding-top: 15px;
 }
